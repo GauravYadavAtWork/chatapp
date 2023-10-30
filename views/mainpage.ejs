@@ -116,12 +116,15 @@
       if (shareButton && textInput) {
         shareButton.addEventListener("click", async () => {
           const textToShare = textInput.value;
+          const urlToShare = window.location.href;
 
           if (textToShare) {
             try {
               if (navigator.share) {
                 await navigator.share({
+                  title: "Join Chat Room On Chat App",
                   text: `Please join with ID: ${textToShare}`,
+                  url: urlToShare,
                 });
                 console.log("Text shared successfully");
               } else {
