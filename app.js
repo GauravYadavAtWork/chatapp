@@ -1,4 +1,5 @@
 import express from 'express';
+import bodyParser from 'body-parser';
 import os from 'os';
 import { createServer } from 'http';
 import chatappCode from './routes/chatapp.js';
@@ -8,7 +9,7 @@ const server = createServer(app);
 const PORT = 3000;
 
 app.use(express.static("public"));
-
+app.use(bodyParser.urlencoded({extended:true}));
 
 let localAddress = 'localhost';
 
@@ -42,8 +43,15 @@ const checkPassword = (req, res, next) => {
 // app.use('/', checkPassword);
 
 app.get("/",(req,res)=>{
-   res.render("index.ejs");
+   res.render("mainpage.ejs");
+});
+
+app.post("/joinRoom",(req,res)=>{
+    console.log(req.body);
+    res.render("index.ejs",{
+        userName:req.body.username,
+        chatRoomId :req.body.chatRoomId,
+    });
 });
 
 chatappCode(server);
-

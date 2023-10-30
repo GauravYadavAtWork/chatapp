@@ -1,9 +1,6 @@
 
 const socket = io('/chatapp',{auth:{token:"hehe"}});
 
-// socket.on('connect_error',error=>{
-//     displayErrorMessage("Error :"+error);
-// });
 let errorMessageDisplayed=false;
 
 socket.on('connect_error', error => {
@@ -30,6 +27,8 @@ const input = document.getElementById('input');
 const messages = document.getElementById('messages');
 const roomInput = document.getElementById('room-id');
 const joinRoomButton=document.getElementById('join-room-button');
+const username= document.getElementById('user-name').textContent;
+var capitalizedUserName = username.charAt(0).toUpperCase() + username.slice(1);
 
 function displaySendMessage(msg){
     const message = document.createElement('div');
@@ -62,23 +61,27 @@ form.addEventListener('submit', function(event) {
     if (input.value) {
         console.log(`room id : ${roomInput.value}`);
         displaySendMessage(input.value);
-        socket.emit('send-Message',input.value,roomInput.value);
+        socket.emit('send-Message',capitalizedUserName+" : "+input.value,roomInput.value);
         input.value = '';
     }
 });
 
 
-joinRoomButton.addEventListener('click',()=>{
+// joinRoomButton.addEventListener('click',()=>{
+//     const room=roomInput.value;
+//     socket.emit('join-room',room, msg=>{
+//         console.log("call back fired");
+//         displayConfigMessage(msg);
+//     });
+// });
+
+setTimeout(() => {
+    // alert(username);
     const room=roomInput.value;
     socket.emit('join-room',room, msg=>{
         console.log("call back fired");
         displayConfigMessage(msg);
     });
-});
+}, 100);
 
 
-// addEventListener('keydown',e=>{
-//     if(e.target.value=='input') return;
-//     if(e.key==='c') socket.connect();
-//     if(e.key==='d') socket.disconnect();;
-// });
