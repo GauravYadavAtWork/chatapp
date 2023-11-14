@@ -44,6 +44,81 @@ const chatappCode = (server)=>{
             }
         });
     });  
+
+// handling requests for game
+    const gameRoom =  io.of("/tictactoe");
+
+    gameRoom.on('connection', (socket) => {
+        console.log(socket.id +" Connected");
+        
+        socket.on("joinGameWithId", (room, name) => {
+            var roomSize = gameRoom.adapter.rooms.get(room);
+            var userCount = roomSize ? roomSize.size : 0;
+            console.log('Number of clients', userCount);
+            if(userCount<2){
+                socket.join(room);
+                console.log(name+" Joined the room "+room +"with id: "+socket.id);
+                socket.emit("joinGameValidation","OK");
+                gameRoom.in(room).emit("playerNames", name);
+            }else{
+                console.log("Room Full, Not Allowed");
+                socket.emit("joinGameValidation","Full");
+            }
+
+        });
+        
+        socket.on('box1',(room,message)=>{
+            console.log(room+" "+message);
+            gameRoom.in(room).emit('box1',message);
+        });
+        socket.on('box2',(room,message)=>{
+            console.log(room+" "+message);
+            gameRoom.in(room).emit('box2',message);
+        });
+        socket.on('box3',(room,message)=>{
+            console.log(room+" "+message);
+            gameRoom.in(room).emit('box3',message);
+        });
+        socket.on('box4',(room,message)=>{
+            console.log(room+" "+message);
+            gameRoom.in(room).emit('box4',message);
+        });
+        socket.on('box5',(room,message)=>{
+            console.log(room+" "+message);
+            gameRoom.in(room).emit('box5',message);
+        });
+        socket.on('box6',(room,message)=>{
+            console.log(room+" "+message);
+            gameRoom.in(room).emit('box6',message);
+        });
+        socket.on('box7',(room,message)=>{
+            console.log(room+" "+message);
+            gameRoom.in(room).emit('box7',message);
+        });
+        socket.on('box8',(room,message)=>{
+            console.log(room+" "+message);
+            gameRoom.in(room).emit('box8',message);
+        });
+        socket.on('box9',(room,message)=>{
+            console.log(room+" "+message);
+            gameRoom.in(room).emit('box9',message);
+        });
+
+        socket.on('leaveRoom', (room, name) => {
+            console.log(gameRoom.adapter.rooms.get(room).size);
+            console.log(socket.id + " Trying to leave the room");
+
+            // Forcefully remove the socket from the room
+            socket.leave(room);
+            console.log(`${name} has left the room ${room}`);
+            var roomSize = gameRoom.adapter.rooms.get(room);
+            var userCount = roomSize ? roomSize.size : 0;
+            console.log('Number of clients', userCount);
+            socket.emit('leaveRoomValidation', 'left');
+        });
+
+    });
+      
 };
 
 export default chatappCode;

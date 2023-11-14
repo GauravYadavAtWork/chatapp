@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Game Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        .outerflex {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+.outerbox {
+  background-color: black;
+  height: 310px;
+  width: 310px;
+  display: grid;
+  grid-template-columns: 100px 100px 100px;
+  grid-template-rows: 100px 100px 100px;
+  gap: 5px;
+}
+.box {
+  background-color: white;
+  text-align: center;
+  font-size: 70px;
+}
+.box:hover {
+  background-color: rgb(224, 220, 220);
+}
+.h1text {
+  margin-top: 40px;
+  text-align: center;
+  font-size: 45px;
+  margin-bottom: 250px;
+}
+.gameContainer{
+  display: block;
+}
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5 border">
+        <form id="joinForm">
+            <div class="fs-1">Your Credentials</div>
+            <div class="validation-message fs-3 text-danger"></div>
+            <div class="players fs-5 text-danger"></div>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="floatingInput"placeholder="name@example.com"  required>
+                <label for="floatingInput">Name</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="floatingPassword"  placeholder="Password" required>
+                <label for="floatingPassword">Room Id</label>
+            </div>
+            <div class="d-flex mt-3 mb-3">
+                <button type="submit" class="btn btn-success " id="joingameButton">Join Game</button>
+                <button type="button" class="btn btn-danger ms-2" style="display: none;">Leave Room</button>
+            </div>
+        </form>
+    </div>
+    <div class="gameContainer">
+    <div class="container border mt-5 outerflex">
+        <div class="outerbox mt-5 mb-5">
+          <div class="box" id="box1"></div>
+          <div class="box" id="box2"></div>
+          <div class="box" id="box3"></div>
+          <div class="box" id="box4"></div>
+          <div class="box" id="box5"></div>
+          <div class="box" id="box6"></div>
+          <div class="box" id="box7"></div>
+          <div class="box" id="box8"></div>
+          <div class="box" id="box9"></div>
+        </div>
+    </div>
+    <h1 class="h1text" id="v-msg">Tap To Start The Game</h1></div>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+      // JavaScript code here
+const socket = io('/tictactoe');
+
+socket.on('connect', () => {
+    console.log("Trying to connect to the game server");
+});
+
+const setButtonText = (text) => {
+    const button = document.querySelector('.btn-success');
+    button.textContent = text;
+};
+
+const setIsButtonDisabled = (value) => {
+    const button = document.querySelector('.btn-success');
+    button.disabled = value;
+};
+
+const setIsButtonVisible = (value) => {
+    const button = document.querySelector('.btn-danger');
+    button.style.display = value ? 'block' : 'none';
+};
+
+const setPlayerNames = (text) => {
+    const playersDiv = document.querySelector('.players');
+    playersDiv.textContent = text;
+};
+
+const setValidationMessage = (text) => {
+    const validationDiv = document.querySelector('.validation-message');
+    validationDiv.textContent = text;
+};
+
+const setTextColorForValidationText = (colorClass) => {
+    const validationDiv = document.querySelector('.validation-message');
+    validationDiv.className = colorClass;
+};
+
+
+// Assuming your form has an id attribute like 'joinForm'
+const joinForm = document.getElementById('joinForm');
+const joinButton = document.querySelector('.btn-success');
+const leaveButton = document.querySelector('.btn-danger');
+
+joinButton.addEventListener('click', (event) => {
+    const name = document.getElementById('floatingInput').value;
+    const roomId = document.getElementById('floatingPassword').value;
+    if(name!="" && roomId!=""){
+        event.preventDefault();
+        setButtonText("Joining...");
+        setIsButtonDisabled(true);
+        socket.emit("joinGameWithId", roomId, name);
+        console.log("Sent JoinGameWithId event");
+    }
+});
+
+// This code will prevent the form from submitting when the join button is clicked
+joinForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+});
+
+
+// listening for the joinGameValidation event
+socket.on('joinGameValidation', (message) => {
+    console.log("joinGameValidation Message Recived");
+    if (message === "OK") {
+        setValidationMessage("You Are Live");
+        setIsButtonDisabled(true);
+        setButtonText("Joined");
+        setIsButtonVisible(true);
+        setTextColorForValidationText("validation-message fs-3 text-success")
+    } else {
+        setValidationMessage("Room Not Available , Try another Room ID");
+        setIsButtonDisabled(false);
+        setButtonText("Join Game");
+        setTextColorForValidationText("validation-message fs-3 text-danger");
+    }
+});
+
+leaveButton.addEventListener('click', () => {
+    const roomId = document.getElementById('floatingPassword').value;
+    const name = document.getElementById('floatingInput').value;
+    socket.emit("leaveRoom", roomId, name);
+});
+
+socket.on('leaveRoomValidation', (message) => {
+    if (message === 'left') {
+        setIsButtonDisabled(false);
+        setButtonText("Join Game");
+        setIsButtonVisible(false);
+        setPlayerNames("");
+        setValidationMessage("");
+    }
+});
+
+socket.on('playerNames', (playernames) => {
+    setPlayerNames("Players : " + playernames);
+});
+
+
+// game logic
+const box1 = document.querySelector("#box1");
+const box2 = document.querySelector("#box2");
+const box3 = document.querySelector("#box3");
+const box4 = document.querySelector("#box4");
+const box5 = document.querySelector("#box5");
+const box6 = document.querySelector("#box6");
+const box7 = document.querySelector("#box7");
+const box8 = document.querySelector("#box8");
+const box9 = document.querySelector("#box9");
+var turn =0;
+
+box1.addEventListener('click',()=>{
+    if(box1.innerText=="" && mode){
+        var room = document.getElementById('floatingPassword').value;
+        if(turn%2==0){
+            box1.innerText='X';
+            socket.emit('box1',room,'X');
+            console.log("emiting box1 message"+room);
+        }else{
+            box1.innerText='O';
+            socket.emit('box1',room,'O');
+            console.log("emiting box1 message",room);
+        }
+        // turn++;
+        changeVSMG(turn);
+    }
+});
+socket.on('box1',(message)=>{
+    console.log("box 1 messge recived "+message);
+    box1.innerText=message;
+    turn++;
+});
+
+box2.addEventListener('click',()=>{
+    var room = document.getElementById('floatingPassword').value;
+    if(box2.innerText=="" && mode){
+        if(turn%2==0){
+            box2.innerText='X';
+            socket.emit('box2',room,'X');
+            console.log("emiting box2 message"+room);
+        }else{
+            box2.innerText='O';
+            socket.emit('box2',room,'O');
+            console.log("emiting box2 message"+room);
+        }
+        // turn++;
+        changeVSMG(turn);
+    }
+});
+socket.on('box2',(message)=>{
+    console.log("box 2 messge recived "+message);
+    box2.innerText=message;
+    turn++;
+});
+
+box3.addEventListener('click',()=>{
+    var room = document.getElementById('floatingPassword').value;
+    if(box3.innerText=="" && mode){
+        if(turn%2==0){
+            box3.innerText='X';
+            socket.emit('box3',room,'X');
+            console.log("emiting box3 message"+room);
+        }else{
+            box3.innerText='O';
+            socket.emit('box3',room,'O');
+            console.log("emiting box3 message"+room);
+        }
+        // turn++;
+        changeVSMG(turn);
+    }
+});
+socket.on('box3',(message)=>{
+    console.log("box 3 messge recived "+message);
+    box3.innerText=message;
+    turn++;
+});
+
+box4.addEventListener('click',()=>{
+    var room = document.getElementById('floatingPassword').value;
+    if(box4.innerText=="" && mode){
+        if(turn%2==0){
+            box4.innerText='X';
+            socket.emit('box4',room,'X');
+            console.log("emiting box4 message"+room);
+        }else{
+            box4.innerText='O';
+            socket.emit('box4',room,'O');
+            console.log("emiting box4 message"+room);
+        }
+        // turn++;
+        changeVSMG(turn);
+    }
+});
+socket.on('box4',(message)=>{
+    console.log("box 4 messge recived "+message);
+    box4.innerText=message;
+    turn++;
+});
+
+box5.addEventListener('click',()=>{
+    var room = document.getElementById('floatingPassword').value;
+    if(box5.innerText=="" && mode){
+        if(turn%2==0){
+            box5.innerText='X';
+            socket.emit('box5',room,'X');
+            console.log("emiting box5 message"+room);
+        }else{
+            box5.innerText='O';
+            socket.emit('box5',room,'O');
+            console.log("emiting box5 message"+room);
+        }
+        // turn++;
+        changeVSMG(turn);
+    }
+});
+socket.on('box5',(message)=>{
+    console.log("box 5 messge recived "+message);
+    box5.innerText=message;
+    turn++;
+});
+
+box6.addEventListener('click',()=>{
+    var room = document.getElementById('floatingPassword').value;
+    if(box6.innerText=="" && mode){
+        if(turn%2==0){
+            box6.innerText='X';
+            socket.emit('box6',room,'X');
+            console.log("emiting box6 message"+room);
+        }else{
+            box6.innerText='O';
+            socket.emit('box6',room,'O');
+            console.log("emiting box6 message"+room);
+        }
+        // turn++;
+        changeVSMG(turn);
+    }
+});
+socket.on('box6',(message)=>{
+    console.log("box 6 messge recived "+message);
+    box6.innerText=message;
+    turn++;
+});
+
+box7.addEventListener('click',()=>{
+    var room = document.getElementById('floatingPassword').value;
+    if(box7.innerText=="" && mode){
+        if(turn%2==0){
+            box7.innerText='X';
+            socket.emit('box7',room,'X');
+            console.log("emiting box7 message"+room);
+        }else{
+            box7.innerText='O';
+            socket.emit('box7',room,'O');
+            console.log("emiting box7 message"+room);
+        }
+        // turn++;
+        changeVSMG(turn);
+    }
+});
+socket.on('box7',(message)=>{
+    console.log("box 7 messge recived "+message);
+    box7.innerText=message;
+    turn++;
+});
+
+box8.addEventListener('click',()=>{
+    var room = document.getElementById('floatingPassword').value;
+    if(box8.innerText=="" && mode){
+        if(turn%2==0){
+            box8.innerText='X';
+            socket.emit('box8',room,'X');
+            console.log("emiting box8 message"+room);
+        }else{
+            box8.innerText='O';
+            socket.emit('box8',room,'O');
+            console.log("emiting box8 message"+room);
+        }
+        // turn++;
+        changeVSMG(turn);
+    }
+});
+socket.on('box8',(message)=>{
+    console.log("box 8 messge recived "+message);
+    box8.innerText=message;
+    turn++;
+});
+
+box9.addEventListener('click',()=>{
+    var room = document.getElementById('floatingPassword').value;
+    if(box9.innerText=="" && mode){
+        if(turn%2==0){
+            box9.innerText='X';
+            socket.emit('box9',room,'X');
+            console.log("emiting box9 message"+room);
+        }else{
+            box9.innerText='O';
+            socket.emit('box9',room,'O');
+            console.log("emiting box9 message"+room);
+        }
+        // turn++;
+        changeVSMG(turn);
+    }
+});
+socket.on('box9',(message)=>{
+    console.log("box 9 messge recived "+message);
+    box9.innerText=message;
+    turn++;
+});
+
+
+var mode = false;
+const vmsg = document.querySelector("#v-msg");
+vmsg.addEventListener('click',()=>{
+    if(vmsg.innerText=="Tap To Start The Game"){
+        mode=true;
+        vmsg.innerText="player 1 turn";
+    }
+});
+
+function changeVSMG(turn){
+    if(winningCondition()){
+        if(turn%2==0){
+            vmsg.innerText="Match Won by player 2";
+        }else{
+            vmsg.innerText="Match Won player 1";
+        }
+        mode = false;
+        return;
+    }
+    if(turn %2==0){
+        vmsg.innerText="player 1 turn";
+    }else{
+        vmsg.innerText="player 2 turn";
+    }
+    if(turn ==9){
+        vmsg.innerText = "Match Draw";
+    }
+}
+
+function winningCondition() {
+    console.log("winningCondition function initialized");
+    // Horizontal checks
+    if (box1.innerText.trim() === box2.innerText.trim() && box2.innerText.trim() === box3.innerText.trim() && box1.innerText.trim() !== "") {
+        return true;
+    } else if (box4.innerText.trim() === box5.innerText.trim() && box5.innerText.trim() === box6.innerText.trim() && box4.innerText.trim() !== "") {
+        return true;
+    } else if (box7.innerText.trim() === box8.innerText.trim() && box8.innerText.trim() === box9.innerText.trim() && box7.innerText.trim() !== "") {
+        return true;
+    }
+    // Vertical checks
+    if (box1.innerText.trim() === box4.innerText.trim() && box4.innerText.trim() === box7.innerText.trim() && box7.innerText.trim() !== "") {
+        return true;
+    } else if (box2.innerText.trim() === box5.innerText.trim() && box5.innerText.trim() === box8.innerText.trim() && box8.innerText.trim() !== "") {
+        return true;
+    } else if (box3.innerText.trim() === box6.innerText.trim() && box6.innerText.trim() === box9.innerText.trim() && box9.innerText.trim() !== "") {
+        return true;
+    }
+    // Diagonal checks
+    if (box1.innerText.trim() === box5.innerText.trim() && box5.innerText.trim() === box9.innerText.trim() && box1.innerText.trim() !== "") {
+        return true;
+    } else if (box3.innerText.trim() === box5.innerText.trim() && box5.innerText.trim() === box7.innerText.trim() && box3.innerText.trim() !== "") {
+        return true;
+    }
+    return false;
+}
+
+
+    </script>
+    <script src="../public/gameScript.js"></script>
+</body>
+</html>
+           

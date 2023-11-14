@@ -3,10 +3,11 @@ import bodyParser from 'body-parser';
 import os from 'os';
 import { createServer } from 'http';
 import chatappCode from './routes/chatapp.js';
+// import tictactoe from './routes/tictactoe.js';
 
 const app = express();
 const server = createServer(app);
-const PORT = 3000;
+const PORT = 8080;
 
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended:true}));
@@ -46,6 +47,10 @@ app.get("/",(req,res)=>{
    res.render("mainpage.ejs");
 });
 
+app.get("/game",(req,res)=>{
+    res.render("gameIndex.ejs");
+});
+
 app.post("/joinRoom",(req,res)=>{
     console.log(req.body);
     res.render("index.ejs",{
@@ -55,3 +60,4 @@ app.post("/joinRoom",(req,res)=>{
 });
 
 chatappCode(server);
+
