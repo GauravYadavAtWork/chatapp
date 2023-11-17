@@ -69,39 +69,48 @@ const chatappCode = (server)=>{
         
         socket.on('box1',(room,message)=>{
             console.log(room+" "+message);
-            gameRoom.in(room).emit('box1',message);
+            // gameRoom.in(room).emit('box1',message);
+            socket.broadcast.to(room).emit('box1', message);
         });
         socket.on('box2',(room,message)=>{
             console.log(room+" "+message);
-            gameRoom.in(room).emit('box2',message);
+            // gameRoom.in(room).emit('box2',message);
+            socket.broadcast.to(room).emit('box2', message);
         });
         socket.on('box3',(room,message)=>{
             console.log(room+" "+message);
-            gameRoom.in(room).emit('box3',message);
+            // gameRoom.in(room).emit('box3',message);
+            socket.broadcast.to(room).emit('box3', message);
         });
         socket.on('box4',(room,message)=>{
             console.log(room+" "+message);
-            gameRoom.in(room).emit('box4',message);
+            // gameRoom.in(room).emit('box4',message);
+            socket.broadcast.to(room).emit('box4', message);
         });
         socket.on('box5',(room,message)=>{
             console.log(room+" "+message);
-            gameRoom.in(room).emit('box5',message);
+            // gameRoom.in(room).emit('box5',message);
+            socket.broadcast.to(room).emit('box5', message);
         });
         socket.on('box6',(room,message)=>{
             console.log(room+" "+message);
-            gameRoom.in(room).emit('box6',message);
+            // gameRoom.in(room).emit('box6',message);
+            socket.broadcast.to(room).emit('box6', message);
         });
         socket.on('box7',(room,message)=>{
             console.log(room+" "+message);
-            gameRoom.in(room).emit('box7',message);
+            // gameRoom.in(room).emit('box7',message);
+            socket.broadcast.to(room).emit('box7', message);
         });
         socket.on('box8',(room,message)=>{
             console.log(room+" "+message);
-            gameRoom.in(room).emit('box8',message);
+            // gameRoom.in(room).emit('box8',message);
+            socket.broadcast.to(room).emit('box8', message);
         });
         socket.on('box9',(room,message)=>{
             console.log(room+" "+message);
-            gameRoom.in(room).emit('box9',message);
+            // gameRoom.in(room).emit('box9',message);
+            socket.broadcast.to(room).emit('box9', message);
         });
 
         socket.on('leaveRoom', (room, name) => {

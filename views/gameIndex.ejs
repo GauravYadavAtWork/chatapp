@@ -78,7 +78,7 @@
     <h1 class="h1text" id="v-msg">Tap To Start The Game</h1></div>
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script>
-      // JavaScript code here
+        // JavaScript code here
 const socket = io('/tictactoe');
 
 socket.on('connect', () => {
@@ -201,7 +201,8 @@ box1.addEventListener('click',()=>{
             socket.emit('box1',room,'O');
             console.log("emiting box1 message",room);
         }
-        // turn++;
+        turn++;
+        mode=false;
         changeVSMG(turn);
     }
 });
@@ -209,6 +210,8 @@ socket.on('box1',(message)=>{
     console.log("box 1 messge recived "+message);
     box1.innerText=message;
     turn++;
+    mode=true;
+    changeVSMG(turn);
 });
 
 box2.addEventListener('click',()=>{
@@ -223,7 +226,8 @@ box2.addEventListener('click',()=>{
             socket.emit('box2',room,'O');
             console.log("emiting box2 message"+room);
         }
-        // turn++;
+        turn++;
+        mode=false;
         changeVSMG(turn);
     }
 });
@@ -231,6 +235,8 @@ socket.on('box2',(message)=>{
     console.log("box 2 messge recived "+message);
     box2.innerText=message;
     turn++;
+    mode=true;
+    changeVSMG(turn);
 });
 
 box3.addEventListener('click',()=>{
@@ -245,7 +251,8 @@ box3.addEventListener('click',()=>{
             socket.emit('box3',room,'O');
             console.log("emiting box3 message"+room);
         }
-        // turn++;
+        turn++;
+        mode=false;
         changeVSMG(turn);
     }
 });
@@ -253,6 +260,8 @@ socket.on('box3',(message)=>{
     console.log("box 3 messge recived "+message);
     box3.innerText=message;
     turn++;
+    mode=true;
+    changeVSMG(turn);
 });
 
 box4.addEventListener('click',()=>{
@@ -267,7 +276,8 @@ box4.addEventListener('click',()=>{
             socket.emit('box4',room,'O');
             console.log("emiting box4 message"+room);
         }
-        // turn++;
+        turn++;
+        mode=false;
         changeVSMG(turn);
     }
 });
@@ -275,6 +285,8 @@ socket.on('box4',(message)=>{
     console.log("box 4 messge recived "+message);
     box4.innerText=message;
     turn++;
+    mode=true;
+    changeVSMG(turn);
 });
 
 box5.addEventListener('click',()=>{
@@ -289,7 +301,8 @@ box5.addEventListener('click',()=>{
             socket.emit('box5',room,'O');
             console.log("emiting box5 message"+room);
         }
-        // turn++;
+        turn++;
+        mode=false;
         changeVSMG(turn);
     }
 });
@@ -297,6 +310,8 @@ socket.on('box5',(message)=>{
     console.log("box 5 messge recived "+message);
     box5.innerText=message;
     turn++;
+    mode=true;
+    changeVSMG(turn);
 });
 
 box6.addEventListener('click',()=>{
@@ -311,7 +326,8 @@ box6.addEventListener('click',()=>{
             socket.emit('box6',room,'O');
             console.log("emiting box6 message"+room);
         }
-        // turn++;
+        turn++;
+        mode=false;
         changeVSMG(turn);
     }
 });
@@ -319,6 +335,8 @@ socket.on('box6',(message)=>{
     console.log("box 6 messge recived "+message);
     box6.innerText=message;
     turn++;
+    mode=true;
+    changeVSMG(turn);
 });
 
 box7.addEventListener('click',()=>{
@@ -333,7 +351,8 @@ box7.addEventListener('click',()=>{
             socket.emit('box7',room,'O');
             console.log("emiting box7 message"+room);
         }
-        // turn++;
+        turn++;
+        mode=false;
         changeVSMG(turn);
     }
 });
@@ -341,6 +360,8 @@ socket.on('box7',(message)=>{
     console.log("box 7 messge recived "+message);
     box7.innerText=message;
     turn++;
+    mode=true;
+    changeVSMG(turn);
 });
 
 box8.addEventListener('click',()=>{
@@ -355,7 +376,8 @@ box8.addEventListener('click',()=>{
             socket.emit('box8',room,'O');
             console.log("emiting box8 message"+room);
         }
-        // turn++;
+        turn++;
+        mode=false;
         changeVSMG(turn);
     }
 });
@@ -363,6 +385,8 @@ socket.on('box8',(message)=>{
     console.log("box 8 messge recived "+message);
     box8.innerText=message;
     turn++;
+    mode=true;
+    changeVSMG(turn);
 });
 
 box9.addEventListener('click',()=>{
@@ -377,7 +401,8 @@ box9.addEventListener('click',()=>{
             socket.emit('box9',room,'O');
             console.log("emiting box9 message"+room);
         }
-        // turn++;
+        turn++;
+        mode=false;
         changeVSMG(turn);
     }
 });
@@ -385,6 +410,8 @@ socket.on('box9',(message)=>{
     console.log("box 9 messge recived "+message);
     box9.innerText=message;
     turn++;
+    mode=true;
+    changeVSMG(turn);
 });
 
 
