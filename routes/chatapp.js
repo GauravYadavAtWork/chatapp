@@ -60,13 +60,22 @@ const chatappCode = (server)=>{
                 console.log(name+" Joined the room "+room +"with id: "+socket.id);
                 socket.emit("joinGameValidation","OK");
                 gameRoom.in(room).emit("playerNames", name);
+                userCount++;
+                if(userCount==2){
+                    gameRoom.in(room).emit("masterMode",true);
+                }
             }else{
                 console.log("Room Full, Not Allowed");
                 socket.emit("joinGameValidation","Full");
             }
-
         });
         
+        socket.on('restartMatch',(message,room)=>{
+            if(message=='OK'){
+                gameRoom.in(room).emit('restartMatch','OK');
+            }
+        });
+
         socket.on('box1',(room,message)=>{
             console.log(room+" "+message);
             // gameRoom.in(room).emit('box1',message);
@@ -116,7 +125,7 @@ const chatappCode = (server)=>{
         socket.on('leaveRoom', (room, name) => {
             console.log(gameRoom.adapter.rooms.get(room).size);
             console.log(socket.id + " Trying to leave the room");
-
+            socket.broadcast.to(room).emit('playerleft','OK');
             // Forcefully remove the socket from the room
             socket.leave(room);
             console.log(`${name} has left the room ${room}`);

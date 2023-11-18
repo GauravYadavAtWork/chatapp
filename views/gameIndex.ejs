@@ -33,6 +33,12 @@
   margin-top: 40px;
   text-align: center;
   font-size: 45px;
+  margin-bottom: 10px;
+}
+.h2text {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 45px;
   margin-bottom: 250px;
 }
 .gameContainer{
@@ -42,7 +48,11 @@
 </head>
 
 <body>
-    <div class="container mt-5 border">
+    <div class="container mb-3  mt-3 justify-content-between d-flex">
+        <div class="fs-1">Tic Tac Toe</div>
+        <button type="button" class="btn btn-warning" onclick="window.location.href='/GameDocs'">how to Play ?</button>
+    </div>
+    <div class="container mt- border">
         <form id="joinForm">
             <div class="fs-1">Your Credentials</div>
             <div class="validation-message fs-3 text-danger"></div>
@@ -75,7 +85,8 @@
           <div class="box" id="box9"></div>
         </div>
     </div>
-    <h1 class="h1text" id="v-msg">Tap To Start The Game</h1></div>
+    <h1 class="h1text" id="v-msg">Join Game Room To Play with Your Friends</h1></div>
+    <h1 class="h2text" id="resetText"></h1></div>
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script>
         // JavaScript code here
@@ -160,6 +171,23 @@ leaveButton.addEventListener('click', () => {
     const roomId = document.getElementById('floatingPassword').value;
     const name = document.getElementById('floatingInput').value;
     socket.emit("leaveRoom", roomId, name);
+    turn=0;
+    resetText.innerText="";
+    masterMOde=false;
+    resetMatch();
+    players="";
+    vmsg.innerText="Join Game Room To Play with Your Friends";
+});
+
+socket.on('playerleft',message=>{
+    if(message=='OK'){
+        turn=0;
+        resetText.innerText="";
+        masterMOde=false;
+        resetMatch();
+        players="";
+        vmsg.innerText="Waiting For Other Player to Join";
+    }
 });
 
 socket.on('leaveRoomValidation', (message) => {
@@ -172,8 +200,10 @@ socket.on('leaveRoomValidation', (message) => {
     }
 });
 
+var players="";
 socket.on('playerNames', (playernames) => {
     setPlayerNames("Players : " + playernames);
+    players=playernames;
 });
 
 
@@ -188,9 +218,10 @@ const box7 = document.querySelector("#box7");
 const box8 = document.querySelector("#box8");
 const box9 = document.querySelector("#box9");
 var turn =0;
+var masterMOde=false;
 
 box1.addEventListener('click',()=>{
-    if(box1.innerText=="" && mode){
+    if(box1.innerText=="" && (mode && masterMOde)){
         var room = document.getElementById('floatingPassword').value;
         if(turn%2==0){
             box1.innerText='X';
@@ -216,7 +247,7 @@ socket.on('box1',(message)=>{
 
 box2.addEventListener('click',()=>{
     var room = document.getElementById('floatingPassword').value;
-    if(box2.innerText=="" && mode){
+    if(box2.innerText=="" && (mode && masterMOde)){
         if(turn%2==0){
             box2.innerText='X';
             socket.emit('box2',room,'X');
@@ -241,7 +272,7 @@ socket.on('box2',(message)=>{
 
 box3.addEventListener('click',()=>{
     var room = document.getElementById('floatingPassword').value;
-    if(box3.innerText=="" && mode){
+    if(box3.innerText=="" && (mode && masterMOde)){
         if(turn%2==0){
             box3.innerText='X';
             socket.emit('box3',room,'X');
@@ -266,7 +297,7 @@ socket.on('box3',(message)=>{
 
 box4.addEventListener('click',()=>{
     var room = document.getElementById('floatingPassword').value;
-    if(box4.innerText=="" && mode){
+    if(box4.innerText=="" && (mode && masterMOde)){
         if(turn%2==0){
             box4.innerText='X';
             socket.emit('box4',room,'X');
@@ -291,7 +322,7 @@ socket.on('box4',(message)=>{
 
 box5.addEventListener('click',()=>{
     var room = document.getElementById('floatingPassword').value;
-    if(box5.innerText=="" && mode){
+    if(box5.innerText=="" && (mode && masterMOde)){
         if(turn%2==0){
             box5.innerText='X';
             socket.emit('box5',room,'X');
@@ -316,7 +347,7 @@ socket.on('box5',(message)=>{
 
 box6.addEventListener('click',()=>{
     var room = document.getElementById('floatingPassword').value;
-    if(box6.innerText=="" && mode){
+    if(box6.innerText=="" && (mode && masterMOde)){
         if(turn%2==0){
             box6.innerText='X';
             socket.emit('box6',room,'X');
@@ -341,7 +372,7 @@ socket.on('box6',(message)=>{
 
 box7.addEventListener('click',()=>{
     var room = document.getElementById('floatingPassword').value;
-    if(box7.innerText=="" && mode){
+    if(box7.innerText=="" && (mode && masterMOde)){
         if(turn%2==0){
             box7.innerText='X';
             socket.emit('box7',room,'X');
@@ -366,7 +397,7 @@ socket.on('box7',(message)=>{
 
 box8.addEventListener('click',()=>{
     var room = document.getElementById('floatingPassword').value;
-    if(box8.innerText=="" && mode){
+    if(box8.innerText=="" && (mode && masterMOde)){
         if(turn%2==0){
             box8.innerText='X';
             socket.emit('box8',room,'X');
@@ -391,7 +422,7 @@ socket.on('box8',(message)=>{
 
 box9.addEventListener('click',()=>{
     var room = document.getElementById('floatingPassword').value;
-    if(box9.innerText=="" && mode){
+    if(box9.innerText=="" && (mode && masterMOde)){
         if(turn%2==0){
             box9.innerText='X';
             socket.emit('box9',room,'X');
@@ -418,19 +449,54 @@ socket.on('box9',(message)=>{
 var mode = false;
 const vmsg = document.querySelector("#v-msg");
 vmsg.addEventListener('click',()=>{
-    if(vmsg.innerText=="Tap To Start The Game"){
+    if((masterMOde==false)&&(players!=="")){
+        vmsg.innerText="Waiting For Other Player to Join"
+    }
+    if(vmsg.innerText=="Tap to Start The Game"){
         mode=true;
         vmsg.innerText="player 1 turn";
+    }
+});
+
+socket.on('masterMode',(message)=>{
+    if(message){
+        masterMOde=true;
+        vmsg.innerText="Tap to Start The Game";
+    }
+})
+
+const resetText = document.querySelector("#resetText");
+resetText.addEventListener('click',()=>{
+    console.log("resetText listerner Got Clicked");
+    var room = document.getElementById('floatingPassword').value;
+    if(resetText.innerText=="Tap to Restart Match..!"){
+        socket.emit("restartMatch",'OK',room);
+        mode=true;
+        turn=0;
+        resetText.innerText="";
+        resetMatch();
+        vmsg.innerText="Play";
+    }
+});
+
+socket.on('restartMatch',(message)=>{
+    if(message=='OK'){
+        mode=true;
+        turn=0;
+        resetText.innerText="";
+        resetMatch();
+        vmsg.innerText="Play";
     }
 });
 
 function changeVSMG(turn){
     if(winningCondition()){
         if(turn%2==0){
-            vmsg.innerText="Match Won by player 2";
+            vmsg.innerText="Match Won by player O";
         }else{
-            vmsg.innerText="Match Won player 1";
+            vmsg.innerText="Match Won by player X";
         }
+        resetText.innerText="Tap to Restart Match..!";
         mode = false;
         return;
     }
@@ -441,6 +507,8 @@ function changeVSMG(turn){
     }
     if(turn ==9){
         vmsg.innerText = "Match Draw";
+        resetText.innerText="Tap to Restart Match..!";
+        mode = false;
     }
 }
 
@@ -469,6 +537,18 @@ function winningCondition() {
         return true;
     }
     return false;
+}
+
+function resetMatch(){
+    box1.innerText="";
+    box2.innerText="";
+    box3.innerText="";
+    box4.innerText="";
+    box5.innerText="";
+    box6.innerText="";
+    box7.innerText="";
+    box8.innerText="";
+    box9.innerText="";
 }
 
 

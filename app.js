@@ -23,6 +23,8 @@ Object.keys(interfaces).forEach((interfaceName) => {
     });
 });
 
+
+
 server.listen(PORT, "0.0.0.0", () => {
     console.log(`Server is running on port ${PORT}`);
     console.log(`Server is also accessible at http://${localAddress}:${PORT}`);
@@ -49,6 +51,10 @@ app.get("/",(req,res)=>{
 
 app.get("/game",(req,res)=>{
     res.render("gameIndex.ejs");
+});
+
+app.get("/GameDocs",(req,res)=>{
+    res.render("gameDocs.ejs");
 });
 
 app.post("/joinRoom",(req,res)=>{
