@@ -50,8 +50,12 @@ app.get("/",(req,res)=>{
 });
 
 app.get("/game",(req,res)=>{
-    res.render("gameIndex.ejs");
+    res.render("loadingPage.ejs");
 });
+
+app.get("/LoadGame",(req,res)=>{
+    res.render("gameIndex.ejs");
+})
 
 app.get("/GameDocs",(req,res)=>{
     res.render("gameDocs.ejs");

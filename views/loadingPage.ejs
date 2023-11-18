@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+      background-color: #f2f2f2;
+      overflow: hidden;
+    }
+
+    .loading-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 0px;
+      width: 200px; /* Increased container width */
+      height: 200px; /* Increased container height */
+      overflow: hidden;
+      position: relative;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .grid-item {
+      width: 50px;
+      height: 50px;
+      background-color: greenyellow;
+      border: 1px solid #2980b9;
+      position: relative;
+      opacity: 0;
+      transform: scale(0);
+      animation: gridAnimation 3s forwards;
+    }
+
+    /* Animation styles */
+    @keyframes gridAnimation {
+      0% {
+        opacity: 0;
+        transform: scale(0);
+        rotate: 0deg;
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+        rotate: 360deg;
+      }
+    }
+
+    /* Animation delay for each grid item */
+    .grid-item:nth-child(1) { animation-delay: 0.1s; }
+    .grid-item:nth-child(2) { animation-delay: 0.2s; }
+    .grid-item:nth-child(3) { animation-delay: 0.3s; }
+    .grid-item:nth-child(4) { animation-delay: 0.4s; }
+    .grid-item:nth-child(5) { animation-delay: 0.5s; }
+    .grid-item:nth-child(6) { animation-delay: 0.6s; }
+    .grid-item:nth-child(7) { animation-delay: 0.7s; }
+    .grid-item:nth-child(8) { animation-delay: 0.8s; }
+    .grid-item:nth-child(9) { animation-delay: 0.9s; }
+
+    .heading {
+      font-size: 45px;
+      color: darkgreen;
+      animation-name: fade;
+      margin: 14px;
+      animation-duration: 4s;
+      transform: scale(0);
+      animation-fill-mode: forwards;
+    }
+
+    @keyframes fade {
+      0% {
+        opacity: 0;
+        transform: scale(0);
+        rotate: 0deg;
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+        rotate: -360deg;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="loading-container">
+  <!-- 3x3 grid items -->
+  <div class="grid-item"></div>
+  <div class="grid-item"></div>
+  <div class="grid-item"></div>
+  <div class="grid-item"></div>
+  <div class="grid-item"></div>
+  <div class="grid-item"></div>
+  <div class="grid-item"></div>
+  <div class="grid-item"></div>
+  <div class="grid-item"></div>
+</div>
+<div class="heading">Tic Tac Toe</div>
+<script>
+  // Redirect to the main page after the animation
+  setTimeout(function() {
+    window.location.href = "/LoadGame";
+  }, 5000);
+</script>
+
+</body>
+</html>
